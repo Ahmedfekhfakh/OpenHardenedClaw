@@ -1,0 +1,75 @@
+{
+  "_comment": "Hardened OpenClaw configuration — all fields are read-only at runtime via :ro bind mount",
+
+  "models": {
+    "providers": {
+      "llamacpp-local": {
+        "baseUrl": "http://llamacpp-server:8080/v1",
+        "api": "openai-completions",
+        "apiKey": "sk-local"
+      }
+    }
+  },
+
+  "agents": {
+    "defaults": {
+      "models": {
+        "llamacpp-local/model": {
+          "enabled": true,
+          "params": {
+            "streaming": false,
+            "extra_body": {
+              "tool_choice": "required"
+            }
+          },
+          "compat": {
+            "supportsTools": true
+          }
+        }
+      }
+    }
+  },
+
+  "sandbox": {
+    "mode": "all",
+    "readOnlyRoot": true,
+    "network": "none",
+    "capDrop": ["ALL"],
+    "user": "1000:1000",
+    "seccomp": "openclaw-seccomp.json",
+    "pidsLimit": 64,
+    "memoryLimit": "512m",
+    "cpuLimit": 1,
+    "noNewPrivileges": true
+  },
+
+  "tools": {
+    "allow": [
+      "file_read",
+      "file_write",
+      "bash",
+      "grep",
+      "glob",
+      "list_directory"
+    ],
+    "deny": [
+      "browser",
+      "cron",
+      "network_fetch",
+      "mcp_install",
+      "mcp_remove",
+      "credential_read",
+      "credential_write",
+      "docker_exec",
+      "skill_install",
+      "skill_create"
+    ]
+  },
+
+  "security": {
+    "readOnlyConfig": true,
+    "noCredentials": true,
+    "noDockerSocket": true,
+    "resolveSymlinks": true
+  }
+}

@@ -1,0 +1,238 @@
+# =============================================================================
+# docker-compose.yml — Hardened OpenClaw Deployment
+# =============================================================================
+# Three-container architecture on an internal-only (no internet) network:
+#   1. openclaw-gateway   — agent loop (config :ro, project :rw)
+#   2. llamacpp-server    — local model serving .gguf over /v1
+#   3. openclaw-sandbox   — per-session tool execution (profile: sandbox)
+#
+# Security invariants enforced:
+#   - NO docker.sock mount (prevents daemon takeover)
+#   - NO --privileged, host network, seccomp=unconfined, cap_add: ALL
+#   - Root filesystem read_only: true + tmpfs for scratch
+#   - Non-root user, cap_drop ALL, no-new-privileges
+#   - Credentials/secrets NEVER enter any container
+# =============================================================================
+
+services:
+
+  # ===========================================================================
+  # openclaw-gateway — the agent loop
+  # ===========================================================================
+  openclaw-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.openclaw
+    container_name: openclaw-gateway
+
+    # -- Read-only root filesystem (threat: arbitrary writes to system paths) --
+    read_only: true
+
+    # -- Volumes: config/instructions :ro, project :rw -----------------------
+    volumes:
+      # Core config — :ro blocks mid-session hot-reload attacks (MCP grants,
+      # tool allowlist widening, model endpoint redirection)
+      - ../config/openclaw.json:/home/agent/.openclaw/openclaw.json:ro
+
+      # Workspace instruction files — :ro blocks cross-session poisoning
+      # AGENTS.md: prevents agent role/delegation redefinition
+      - ../config/workspace/AGENTS.md:/home/agent/.openclaw/workspace/AGENTS.md:ro
+      # SOUL.md: prevents personality/safety-rule rewrite (persistence attack)
+      - ../config/workspace/SOUL.md:/home/agent/.openclaw/workspace/SOUL.md:ro
+      # MEMORY.md: prevents persistent memory poisoning across sessions
+      - ../config/workspace/MEMORY.md:/home/agent/.openclaw/workspace/MEMORY.md:ro
+      # USER.md: prevents user-preference manipulation to lower safety thresholds
+      - ../config/workspace/USER.md:/home/agent/.openclaw/workspace/USER.md:ro
+      # IDENTITY.md: prevents identity substitution attacks
+      - ../config/workspace/IDENTITY.md:/home/agent/.openclaw/workspace/IDENTITY.md:ro
+      # TOOLS.md: prevents silent tool-definition injection or scope widening
+      - ../config/workspace/TOOLS.md:/home/agent/.openclaw/workspace/TOOLS.md:ro
+      # BOOT.md: pre-consent execution hook — :ro is non-negotiable
+      - ../config/workspace/BOOT.md:/home/agent/.openclaw/workspace/BOOT.md:ro
+      # HEARTBEAT.md: timer-driven execution hook — :ro prevents beaconing/exfil
+      - ../config/workspace/HEARTBEAT.md:/home/agent/.openclaw/workspace/HEARTBEAT.md:ro
+      # Extended memory files — :ro prevents injecting authoritative facts
+      - ../config/workspace/memory:/home/agent/.openclaw/workspace/memory:ro
+      # Workspace skills (highest precedence, name-shadows managed skills) —
+      # :ro prevents code execution + skill hijack via one file write
+      - ../config/workspace/skills:/home/agent/.openclaw/workspace/skills:ro
+      # Managed skills — :ro prevents injection of persistent arbitrary code
+      - ../config/skills:/home/agent/.openclaw/skills:ro
+      # Project directory — the ONLY writable mount (agent's legitimate workspace)
+      - ../project:/home/agent/project:rw
+      # Demo scripts and attack harness — :ro (not agent-writable)
+      - ../demo:/home/agent/demo:ro
+      - ../attacks:/home/agent/attacks:ro
+      # Evidence capture — :rw for harness to write results
+      - ../evidence:/home/agent/evidence:rw
+
+    # -- tmpfs: ephemeral scratch areas (wiped on container stop) -------------
+    tmpfs:
+      # /tmp: general scratch (threat: persistent state across restarts)
+      - /tmp:size=256m,noexec,nosuid,nodev
+      # /run: runtime state (threat: write to read-only root fs)
+      - /run:size=64m,noexec,nosuid,nodev
+      # Session history: ephemeral per-run (threat: cross-session persistence
+      # from a compromised run)
+      - /home/agent/.openclaw/agents:size=128m,noexec,nosuid,nodev
+
+    # -- Non-root user (threat: root inside container enables escape vectors) -
+    user: "1000:1000"
+
+    # -- Drop ALL capabilities (threat: cap-based privilege escalation) -------
+    cap_drop:
+      - ALL
+
+    # -- Security options -----------------------------------------------------
+    security_opt:
+      # Prevent SUID/capability escalation (threat: setuid binary exploitation)
+      - no-new-privileges:true
+      # Restricted seccomp profile (threat: dangerous syscalls like mount, ptrace)
+      - seccomp=seccomp/openclaw-seccomp.json
+
+    # -- Resource limits (threat: fork bomb / memory exhaustion DoS) ----------
+    pids_limit: 256
+    mem_limit: 2g
+    cpus: 2
+
+    # -- Networking -----------------------------------------------------------
+    networks:
+      - openclaw-internal
+
+    # -- Service dependency and hostname resolution ----------------------------
+    # On internal:true networks, Docker's embedded DNS (127.0.0.11) may be
+    # unreachable. `links` adds /etc/hosts entries for service-name resolution.
+    links:
+      - llamacpp-server
+    depends_on:
+      - llamacpp-server
+
+    # -- Health check ---------------------------------------------------------
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ===========================================================================
+  # llamacpp-server — local model serving (.gguf over OpenAI-compatible /v1)
+  # ===========================================================================
+  llamacpp-server:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: llamacpp-server
+
+    # -- Read-only root filesystem (threat: arbitrary writes to system paths) --
+    read_only: true
+
+    # -- Model weights :ro (threat: model tampering / replacement) ------------
+    volumes:
+      - ../models:/models:ro
+
+    # -- tmpfs: scratch for llama.cpp temp files ------------------------------
+    tmpfs:
+      - /tmp:size=256m,noexec,nosuid,nodev
+
+    # -- GPU: offload entire model to CUDA (RTX 4060) -------------------------
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    # -- Start command: serve model on internal network only ------------------
+    # -ngl 99 = offload all layers to GPU
+    command: >-
+      --host 0.0.0.0
+      --port 8080
+      --model /models/model.gguf
+      --jinja
+      -ngl 99
+
+    # -- Non-root user (threat: root inside container enables escape vectors) -
+    user: "1000:1000"
+
+    # -- Drop ALL capabilities (threat: cap-based privilege escalation) -------
+    cap_drop:
+      - ALL
+
+    # -- Security options -----------------------------------------------------
+    security_opt:
+      # Prevent SUID/capability escalation (threat: setuid binary exploitation)
+      - no-new-privileges:true
+
+    # -- Resource limits (threat: model inference can be CPU/memory hungry) ---
+    pids_limit: 64
+    mem_limit: 12g
+    cpus: 4
+
+    # -- Networking: reachable only on internal network -----------------------
+    networks:
+      - openclaw-internal
+
+    # -- Health check on /v1/models endpoint ----------------------------------
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/v1/models"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ===========================================================================
+  # openclaw-sandbox — per-session tool execution sandbox
+  # ===========================================================================
+  # NOTE: In production, OpenClaw spawns sandbox containers dynamically per
+  # session with network:none. This service is defined under the "sandbox"
+  # profile so it is NOT started with `docker compose up` by default.
+  # Start explicitly: `docker compose --profile sandbox up openclaw-sandbox`
+  openclaw-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile.openclaw
+    container_name: openclaw-sandbox
+
+    # -- Profile: not started by default (gateway spawns per session) ---------
+    profiles:
+      - sandbox
+
+    # -- Read-only root filesystem (threat: arbitrary writes to system paths) --
+    read_only: true
+
+    # -- tmpfs: scratch only (no config, no project, no credentials) ----------
+    tmpfs:
+      - /tmp:size=128m,noexec,nosuid,nodev
+
+    # -- Network isolation: none (threat: exfiltration from sandbox) ----------
+    # The sandbox must have NO network access at all. Since network_mode: none
+    # overrides the service-level network assignment, this is the correct way.
+    network_mode: "none"
+
+    # -- Non-root user (threat: root inside container enables escape vectors) -
+    user: "1000:1000"
+
+    # -- Drop ALL capabilities (threat: cap-based privilege escalation) -------
+    cap_drop:
+      - ALL
+
+    # -- Security options -----------------------------------------------------
+    security_opt:
+      # Prevent SUID/capability escalation (threat: setuid binary exploitation)
+      - no-new-privileges:true
+      # Restricted seccomp profile (threat: dangerous syscalls like mount, ptrace)
+      - seccomp=seccomp/openclaw-seccomp.json
+
+    # -- Resource limits (threat: fork bomb / memory exhaustion from sandbox) -
+    pids_limit: 64
+    mem_limit: 512m
+    cpus: 1
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  openclaw-internal:
+    driver: bridge
+    # internal: true means no default gateway to the host network — no internet
+    # (threat: data exfiltration, C2 beaconing, supply-chain attacks)
+    internal: true

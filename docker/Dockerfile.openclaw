@@ -1,0 +1,54 @@
+# =============================================================================
+# Dockerfile.openclaw — Hardened OpenClaw Agent Image
+# =============================================================================
+# Minimal base, non-root user, no secrets baked in.
+# Used by both openclaw-gateway and openclaw-sandbox services.
+# =============================================================================
+
+FROM node:20-slim
+
+# --- Metadata ----------------------------------------------------------------
+LABEL maintainer="telecom-paris-707-lab"
+LABEL description="Hardened OpenClaw agent image — non-root, minimal surface"
+
+# --- Install only essential system packages ----------------------------------
+# curl: health checks; tini: PID-1 signal forwarding (zombie reaping)
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      curl \
+      tini \
+ && rm -rf /var/lib/apt/lists/*
+
+# --- Create non-root user (UID 1000) ----------------------------------------
+# Threat: running as root allows privilege escalation and host escape vectors.
+# Control: dedicated unprivileged user with no login shell.
+# UID/GID 1000 already exists in node:20-slim as "node". Reuse it as "agent".
+RUN usermod -l agent -d /home/agent -m node 2>/dev/null \
+ && groupmod -n agent node 2>/dev/null || true
+
+# --- Simulate OpenClaw directory structure -----------------------------------
+# In production, this would be `npm install -g openclaw` or similar.
+# We create the expected directory tree so bind mounts have valid targets.
+RUN mkdir -p /home/agent/.openclaw/workspace/memory \
+             /home/agent/.openclaw/workspace/skills \
+             /home/agent/.openclaw/skills \
+             /home/agent/.openclaw/agents \
+             /home/agent/project \
+ && chown -R 1000:1000 /home/agent
+
+# --- No secrets, no credentials, no .env ------------------------------------
+# Threat: baked-in secrets are extractable by any process in the container.
+# Control: secrets are NEVER copied into the image; model is local (llama.cpp).
+
+# --- Switch to non-root user ------------------------------------------------
+USER agent
+WORKDIR /home/agent
+
+# --- Use tini as PID 1 for proper signal handling ---------------------------
+ENTRYPOINT ["tini", "--"]
+
+# --- Copy agent loop script --------------------------------------------------
+COPY agent-loop.sh /home/agent/agent-loop.sh
+
+# --- Default command: start the simulated agent loop -------------------------
+CMD ["sh", "/home/agent/agent-loop.sh"]

@@ -1,0 +1,45 @@
+============================================
+  Agent Coding Task Demo
+  2026-06-28T20:05:44Z
+============================================
+
+--- Step 1: Agent boot (reading workspace files) ---
+SOUL.md:
+# Soul
+
+You are a secure coding assistant operating in a hardened Docker environment.
+
+Config endpoint:
+        "baseUrl": "http://llamacpp-server:8080/v1",
+
+--- Step 2: Sending coding task to llama.cpp ---
+Task: Write a Python function that checks if a number is prime.
+
+Model response received (4514 bytes).
+Model generated code successfully.
+
+--- Step 3: Writing code to project/prime.py ---
+Write succeeded (project/ is :rw).
+Content:
+def is_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+--- Step 4: Verification ---
+project/prime.py:
+-rw-r--r-- 1 agent agent 157 Jun 28 20:06 /home/agent/project/prime.py
+sha256: fbf940594b47357b14b7eeb584d042d97525c0d3170d58c3a01e13820de300aa
+
+Confirm protected paths reject writes:
+  openclaw.json: Read-only file system (OK)
+  SOUL.md:       Read-only file system (OK)
+
+============================================
+  Coding task demo complete.
+  Agent wrote code to project/ via llama.cpp.
+  Protected paths remained read-only.
+============================================
