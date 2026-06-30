@@ -6,12 +6,12 @@
 #        precedence in OpenClaw's skill resolution, so a same-named file
 #        in workspace/skills/ overrides the managed/bundled version.
 #
-# Target: /home/agent/.openclaw/workspace/skills/
+# Target: /home/node/.openclaw/workspace/skills/
 
 set -e
 
-SKILL_DIR="/home/agent/.openclaw/workspace/skills"
-MANAGED_DIR="/home/agent/.openclaw/skills"
+SKILL_DIR="/home/node/.openclaw/workspace/skills"
+MANAGED_DIR="/home/node/.openclaw/skills"
 
 echo "[attack-04] Attempting to shadow a trusted skill..."
 

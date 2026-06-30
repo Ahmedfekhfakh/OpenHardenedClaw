@@ -2,7 +2,7 @@
 # docker-compose.yml — Hardened OpenClaw Deployment
 # =============================================================================
 # Three-container architecture on an internal-only (no internet) network:
-#   1. openclaw-gateway   — agent loop (config :ro, project :rw)
+#   1. openclaw-gateway   — real OpenClaw agent loop (config :ro, project :rw)
 #   2. llamacpp-server    — local model serving .gguf over /v1
 #   3. openclaw-sandbox   — per-session tool execution (profile: sandbox)
 #
@@ -12,18 +12,42 @@
 #   - Root filesystem read_only: true + tmpfs for scratch
 #   - Non-root user, cap_drop ALL, no-new-privileges
 #   - Credentials/secrets NEVER enter any container
+#   - NO ports exposed to host — interaction via `docker exec` only
 # =============================================================================
 
 services:
 
   # ===========================================================================
-  # openclaw-gateway — the agent loop
+  # openclaw-gateway — the real OpenClaw agent loop
+  # ===========================================================================
+  # Extends the official ghcr.io/openclaw/openclaw:latest image.
+  # The agent process (node openclaw.mjs gateway) runs under tini as PID 1.
+  # Config/instructions/skills are mounted :ro; only the project dir is :rw.
   # ===========================================================================
   openclaw-gateway:
     build:
       context: .
       dockerfile: Dockerfile.openclaw
     container_name: openclaw-gateway
+
+    # -- Environment: OpenClaw runtime paths ----------------------------------
+    # These tell the real OpenClaw process where to find its config and state.
+    environment:
+      HOME: /home/node
+      OPENCLAW_HOME: /home/node
+      OPENCLAW_STATE_DIR: /home/node/.openclaw
+      OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+      OPENCLAW_CONFIG_DIR: /home/node/.openclaw
+      OPENCLAW_WORKSPACE_DIR: /home/node/.openclaw/workspace
+      TERM: xterm-256color
+      # Auth token for gateway binding — internal network only, no internet
+      OPENCLAW_GATEWAY_TOKEN: "hardened-lab-internal-only"
+
+    # -- Command: start the gateway on 0.0.0.0 for internal network access ----
+    # Binds to all interfaces so llamacpp-server DNS resolution works on the
+    # internal Docker network. Port 18789 is OpenClaw's default gateway port.
+    # WORKDIR in the image is /app where openclaw.mjs lives.
+    command: ["node", "openclaw.mjs", "gateway", "--bind", "lan", "--port", "18789"]
 
     # -- Read-only root filesystem (threat: arbitrary writes to system paths) --
     read_only: true
@@ -32,39 +56,39 @@ services:
     volumes:
       # Core config — :ro blocks mid-session hot-reload attacks (MCP grants,
       # tool allowlist widening, model endpoint redirection)
-      - ../config/openclaw.json:/home/agent/.openclaw/openclaw.json:ro
+      - ../config/openclaw.json:/home/node/.openclaw/openclaw.json:ro
 
       # Workspace instruction files — :ro blocks cross-session poisoning
       # AGENTS.md: prevents agent role/delegation redefinition
-      - ../config/workspace/AGENTS.md:/home/agent/.openclaw/workspace/AGENTS.md:ro
+      - ../config/workspace/AGENTS.md:/home/node/.openclaw/workspace/AGENTS.md:ro
       # SOUL.md: prevents personality/safety-rule rewrite (persistence attack)
-      - ../config/workspace/SOUL.md:/home/agent/.openclaw/workspace/SOUL.md:ro
+      - ../config/workspace/SOUL.md:/home/node/.openclaw/workspace/SOUL.md:ro
       # MEMORY.md: prevents persistent memory poisoning across sessions
-      - ../config/workspace/MEMORY.md:/home/agent/.openclaw/workspace/MEMORY.md:ro
+      - ../config/workspace/MEMORY.md:/home/node/.openclaw/workspace/MEMORY.md:ro
       # USER.md: prevents user-preference manipulation to lower safety thresholds
-      - ../config/workspace/USER.md:/home/agent/.openclaw/workspace/USER.md:ro
+      - ../config/workspace/USER.md:/home/node/.openclaw/workspace/USER.md:ro
       # IDENTITY.md: prevents identity substitution attacks
-      - ../config/workspace/IDENTITY.md:/home/agent/.openclaw/workspace/IDENTITY.md:ro
+      - ../config/workspace/IDENTITY.md:/home/node/.openclaw/workspace/IDENTITY.md:ro
       # TOOLS.md: prevents silent tool-definition injection or scope widening
-      - ../config/workspace/TOOLS.md:/home/agent/.openclaw/workspace/TOOLS.md:ro
+      - ../config/workspace/TOOLS.md:/home/node/.openclaw/workspace/TOOLS.md:ro
       # BOOT.md: pre-consent execution hook — :ro is non-negotiable
-      - ../config/workspace/BOOT.md:/home/agent/.openclaw/workspace/BOOT.md:ro
+      - ../config/workspace/BOOT.md:/home/node/.openclaw/workspace/BOOT.md:ro
       # HEARTBEAT.md: timer-driven execution hook — :ro prevents beaconing/exfil
-      - ../config/workspace/HEARTBEAT.md:/home/agent/.openclaw/workspace/HEARTBEAT.md:ro
+      - ../config/workspace/HEARTBEAT.md:/home/node/.openclaw/workspace/HEARTBEAT.md:ro
       # Extended memory files — :ro prevents injecting authoritative facts
-      - ../config/workspace/memory:/home/agent/.openclaw/workspace/memory:ro
+      - ../config/workspace/memory:/home/node/.openclaw/workspace/memory:ro
       # Workspace skills (highest precedence, name-shadows managed skills) —
       # :ro prevents code execution + skill hijack via one file write
-      - ../config/workspace/skills:/home/agent/.openclaw/workspace/skills:ro
+      - ../config/workspace/skills:/home/node/.openclaw/workspace/skills:ro
       # Managed skills — :ro prevents injection of persistent arbitrary code
-      - ../config/skills:/home/agent/.openclaw/skills:ro
+      - ../config/skills:/home/node/.openclaw/skills:ro
       # Project directory — the ONLY writable mount (agent's legitimate workspace)
-      - ../project:/home/agent/project:rw
+      - ../project:/home/node/project:rw
       # Demo scripts and attack harness — :ro (not agent-writable)
-      - ../demo:/home/agent/demo:ro
-      - ../attacks:/home/agent/attacks:ro
+      - ../demo:/home/node/demo:ro
+      - ../attacks:/home/node/attacks:ro
       # Evidence capture — :rw for harness to write results
-      - ../evidence:/home/agent/evidence:rw
+      - ../evidence:/home/node/evidence:rw
 
     # -- tmpfs: ephemeral scratch areas (wiped on container stop) -------------
     tmpfs:
@@ -74,7 +98,11 @@ services:
       - /run:size=64m,noexec,nosuid,nodev
       # Session history: ephemeral per-run (threat: cross-session persistence
       # from a compromised run)
-      - /home/agent/.openclaw/agents:size=128m,noexec,nosuid,nodev
+      - /home/node/.openclaw/agents:size=128m,noexec,nosuid,nodev,uid=1000,gid=1000
+      # Logs: gateway writes audit logs here (ephemeral, wiped on stop)
+      - /home/node/.openclaw/logs:size=64m,noexec,nosuid,nodev,uid=1000,gid=1000
+      # State: plugin registry SQLite DB (ephemeral, rebuilt on start)
+      - /home/node/.openclaw/state:size=64m,nosuid,nodev,uid=1000,gid=1000
 
     # -- Non-root user (threat: root inside container enables escape vectors) -
     user: "1000:1000"
@@ -107,12 +135,13 @@ services:
     depends_on:
       - llamacpp-server
 
-    # -- Health check ---------------------------------------------------------
+    # -- Health check: real OpenClaw gateway healthz endpoint -----------------
     healthcheck:
-      test: ["CMD", "true"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 3
+      start_period: 15s
 
   # ===========================================================================
   # llamacpp-server — local model serving (.gguf over OpenAI-compatible /v1)

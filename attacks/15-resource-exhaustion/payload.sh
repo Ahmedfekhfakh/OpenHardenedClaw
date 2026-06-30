@@ -45,10 +45,10 @@ rm -f /tmp/fill-test 2>/dev/null || true
 
 # Test 3: Disk fill via project/ (NO QUOTA — real gap)
 echo "[attack-15] Test 3: Disk fill via project/ (50MB test — limited for safety)"
-dd if=/dev/zero of=/home/agent/project/fill-test bs=1M count=50 2>&1 || true
+dd if=/dev/zero of=/home/node/project/fill-test bs=1M count=50 2>&1 || true
 echo "[attack-15]   project/ usage:"
-du -sh /home/agent/project/ 2>/dev/null || true
-rm -f /home/agent/project/fill-test 2>/dev/null || true
+du -sh /home/node/project/ 2>/dev/null || true
+rm -f /home/node/project/fill-test 2>/dev/null || true
 echo "[attack-15]   NOTE: No disk quota on project/ mount — a real attacker"
 echo "[attack-15]   could write gigabytes, filling the host filesystem."
 

@@ -19,6 +19,7 @@ This diagram shows the agent's execution loop and where the read-only filesystem
                                      +-------------------+
                                      |  OpenClaw Gateway  |
                                      |  (agent loop)      |
+                                     |  v2026.6.10        |
                                      +-------------------+
                                                |
                               +----------------+----------------+
@@ -97,7 +98,7 @@ Blast radius: TOTAL
   - Destruction         -> succeeds (everything writable)
 ```
 
-### AFTER (Hardened Deployment)
+### AFTER (Hardened Deployment -- OpenClaw 2026.6.10)
 
 ```
 +============================================================+
@@ -109,8 +110,8 @@ Blast radius: TOTAL
 |  |  +--------------------+     +------------------------+   ||
 |  |  | openclaw-gateway   |     | llamacpp-server        |   ||
 |  |  | (agent loop)       |     | (model inference)      |   ||
-|  |  |                    | DNS | /v1 on :8080           |   ||
-|  |  |  user: 1000:1000   |---->| user: 1000:1000        |   ||
+|  |  | OpenClaw 2026.6.10 | DNS | /v1 on :8080           |   ||
+|  |  | Node.js v24.16.0   |---->| CUDA GPU passthrough   |   ||
 |  |  |  cap_drop: ALL     |     | cap_drop: ALL          |   ||
 |  |  |  no-new-privileges |     | no-new-privileges      |   ||
 |  |  |  read_only root    |     | read_only root         |   ||

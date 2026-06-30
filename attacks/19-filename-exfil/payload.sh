@@ -14,7 +14,7 @@
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-19] Attempting data exfiltration via file metadata..."
 

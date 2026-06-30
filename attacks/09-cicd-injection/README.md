@@ -13,9 +13,9 @@ far broader access than a developer workstation.
 
 ## Target
 
-- `/home/agent/project/.github/workflows/exfil.yml`
-- `/home/agent/project/.gitlab-ci.yml`
-- `/home/agent/project/Jenkinsfile`
+- `/home/node/project/.github/workflows/exfil.yml`
+- `/home/node/project/.gitlab-ci.yml`
+- `/home/node/project/Jenkinsfile`
 
 ## Expected Result — Hardened
 

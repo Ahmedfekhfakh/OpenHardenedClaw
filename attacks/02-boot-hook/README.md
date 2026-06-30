@@ -15,7 +15,7 @@ The payload tries three methods:
 
 ## Target
 
-`/home/agent/.openclaw/workspace/BOOT.md`
+`/home/node/.openclaw/workspace/BOOT.md`
 
 ## Threat Classification
 

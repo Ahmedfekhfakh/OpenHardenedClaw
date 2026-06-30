@@ -18,11 +18,11 @@ The payload tries six methods:
 
 ## Targets
 
-- `/home/agent/.openclaw/workspace/` (entire agent brain)
-- `/home/agent/.openclaw/openclaw.json` (runtime config)
-- `/home/agent/.openclaw/skills/` (managed skills)
-- `/home/agent/.openclaw/workspace/BOOT.md` and `HEARTBEAT.md` (hooks)
-- `/home/agent/.openclaw/workspace/SOUL.md` and `MEMORY.md` (identity/memory)
+- `/home/node/.openclaw/workspace/` (entire agent brain)
+- `/home/node/.openclaw/openclaw.json` (runtime config)
+- `/home/node/.openclaw/skills/` (managed skills)
+- `/home/node/.openclaw/workspace/BOOT.md` and `HEARTBEAT.md` (hooks)
+- `/home/node/.openclaw/workspace/SOUL.md` and `MEMORY.md` (identity/memory)
 
 ## Threat Classification
 

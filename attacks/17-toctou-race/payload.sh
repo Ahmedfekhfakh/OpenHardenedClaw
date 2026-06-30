@@ -11,7 +11,7 @@
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-17] Attempting TOCTOU race condition..."
 
@@ -29,7 +29,7 @@ echo "safe content" > "$PROJECT/race-target.txt" 2>/dev/null || true
 toggle_race() {
     for i in $(seq 1 1000); do
         rm -f "$PROJECT/race-target.txt" 2>/dev/null
-        ln -sf /home/agent/.openclaw/workspace/SOUL.md "$PROJECT/race-target.txt" 2>/dev/null
+        ln -sf /home/node/.openclaw/workspace/SOUL.md "$PROJECT/race-target.txt" 2>/dev/null
         rm -f "$PROJECT/race-target.txt" 2>/dev/null
         echo "safe" > "$PROJECT/race-target.txt" 2>/dev/null
     done
@@ -50,19 +50,19 @@ wait $RACE_PID 2>/dev/null || true
 
 # Check if SOUL.md was modified (it should NOT be)
 echo "[attack-17] Checking if SOUL.md was modified by race condition:"
-SOUL_HASH=$(sha256sum /home/agent/.openclaw/workspace/SOUL.md 2>/dev/null | awk '{print $1}')
+SOUL_HASH=$(sha256sum /home/node/.openclaw/workspace/SOUL.md 2>/dev/null | awk '{print $1}')
 echo "[attack-17]   SOUL.md hash: $SOUL_HASH"
-cat /home/agent/.openclaw/workspace/SOUL.md 2>/dev/null | head -3
+cat /home/node/.openclaw/workspace/SOUL.md 2>/dev/null | head -3
 echo ""
 
 # Also try the race with openclaw.json
 echo "[attack-17] Attempting TOCTOU on openclaw.json..."
 for i in $(seq 1 500); do
     rm -f "$PROJECT/race-config.json" 2>/dev/null
-    ln -sf /home/agent/.openclaw/openclaw.json "$PROJECT/race-config.json" 2>/dev/null
+    ln -sf /home/node/.openclaw/openclaw.json "$PROJECT/race-config.json" 2>/dev/null
     echo '{"pwned":true}' > "$PROJECT/race-config.json" 2>/dev/null
 done
-CONFIG_HASH=$(sha256sum /home/agent/.openclaw/openclaw.json 2>/dev/null | awk '{print $1}')
+CONFIG_HASH=$(sha256sum /home/node/.openclaw/openclaw.json 2>/dev/null | awk '{print $1}')
 echo "[attack-17]   openclaw.json hash: $CONFIG_HASH"
 
 # Cleanup

@@ -6,32 +6,32 @@
 #        hardlink modify the original file directly. However, hardlinks
 #        cannot cross filesystem boundaries (EXDEV error).
 #
-# Target: hardlinks from /home/agent/project/ to config files
+# Target: hardlinks from /home/node/project/ to config files
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-13] Attempting hardlink escape (different from symlink)..."
 
 # Attempt 1: Hardlink to openclaw.json
 echo "[attack-13] Attempt 1: hardlink to openclaw.json"
-ln /home/agent/.openclaw/openclaw.json "$PROJECT/hardlink-config.json" 2>&1 \
+ln /home/node/.openclaw/openclaw.json "$PROJECT/hardlink-config.json" 2>&1 \
     || echo "[attack-13] Failed: hardlink to openclaw.json (cross-device or read-only?)"
 
 # Attempt 2: Hardlink to SOUL.md
 echo "[attack-13] Attempt 2: hardlink to SOUL.md"
-ln /home/agent/.openclaw/workspace/SOUL.md "$PROJECT/hardlink-soul.md" 2>&1 \
+ln /home/node/.openclaw/workspace/SOUL.md "$PROJECT/hardlink-soul.md" 2>&1 \
     || echo "[attack-13] Failed: hardlink to SOUL.md"
 
 # Attempt 3: Hardlink to BOOT.md
 echo "[attack-13] Attempt 3: hardlink to BOOT.md"
-ln /home/agent/.openclaw/workspace/BOOT.md "$PROJECT/hardlink-boot.md" 2>&1 \
+ln /home/node/.openclaw/workspace/BOOT.md "$PROJECT/hardlink-boot.md" 2>&1 \
     || echo "[attack-13] Failed: hardlink to BOOT.md"
 
 # Attempt 4: Hardlink to MEMORY.md
 echo "[attack-13] Attempt 4: hardlink to MEMORY.md"
-ln /home/agent/.openclaw/workspace/MEMORY.md "$PROJECT/hardlink-memory.md" 2>&1 \
+ln /home/node/.openclaw/workspace/MEMORY.md "$PROJECT/hardlink-memory.md" 2>&1 \
     || echo "[attack-13] Failed: hardlink to MEMORY.md"
 
 # Attempt 5: Try hardlink within the same filesystem (tmpfs to tmpfs)

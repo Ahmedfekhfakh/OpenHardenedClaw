@@ -72,7 +72,7 @@ From the gateway container, confirm that protected paths reject writes:
 
 ```bash
 docker exec openclaw-gateway sh -c \
-  'echo "test" >> /home/agent/.openclaw/openclaw.json 2>&1 || true'
+  'echo "test" >> /home/node/.openclaw/openclaw.json 2>&1 || true'
 ```
 
 Expected output: `Read-only file system`.
@@ -91,11 +91,11 @@ Demonstrate the agent performing a coding task and the indirect prompt injection
 
 ```bash
 # Coding task: agent calls llama.cpp and writes code to project/
-docker exec openclaw-gateway sh /home/agent/demo/agent-coding-task.sh
+docker exec openclaw-gateway sh /home/node/demo/agent-coding-task.sh
 
 # Indirect injection: poisoned README.md reaches model loop,
 # environment blocks writes to protected paths
-docker exec openclaw-gateway sh /home/agent/demo/indirect-injection-demo.sh
+docker exec openclaw-gateway sh /home/node/demo/indirect-injection-demo.sh
 ```
 
 ### 10. Run Attack Harness
@@ -103,7 +103,7 @@ docker exec openclaw-gateway sh /home/agent/demo/indirect-injection-demo.sh
 Execute all 20 attacks and capture evidence:
 
 ```bash
-docker exec openclaw-gateway sh /home/agent/attacks/harness.sh
+docker exec openclaw-gateway sh /home/node/attacks/harness.sh
 ```
 
 Evidence is written to `evidence/<attack-id>/result.txt` for each attack.

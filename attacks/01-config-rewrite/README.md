@@ -14,7 +14,7 @@ The payload tries four methods:
 
 ## Target
 
-`/home/agent/.openclaw/openclaw.json`
+`/home/node/.openclaw/openclaw.json`
 
 ## Threat Classification
 

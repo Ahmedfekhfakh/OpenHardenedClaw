@@ -20,8 +20,8 @@ The payload tries four methods:
 
 ## Targets
 
-- `/home/agent/.openclaw/workspace/SOUL.md`
-- `/home/agent/.openclaw/workspace/MEMORY.md`
+- `/home/node/.openclaw/workspace/SOUL.md`
+- `/home/node/.openclaw/workspace/MEMORY.md`
 
 ## Threat Classification
 

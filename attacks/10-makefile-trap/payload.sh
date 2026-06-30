@@ -5,11 +5,11 @@
 #        during PARSING (not just target execution). Also inject
 #        package.json postinstall hooks and Python setup.py backdoors.
 #
-# Target: /home/agent/project/Makefile, package.json, setup.py
+# Target: /home/node/project/Makefile, package.json, setup.py
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-10] Attempting to plant build system traps..."
 

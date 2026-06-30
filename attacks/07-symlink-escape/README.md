@@ -23,9 +23,9 @@ The payload tries five methods:
 
 ## Targets
 
-- `/home/agent/project/` (symlink source, `:rw`)
-- `/home/agent/.openclaw/workspace/` (symlink target, `:ro`)
-- `/home/agent/.openclaw/openclaw.json` (symlink target, `:ro`)
+- `/home/node/project/` (symlink source, `:rw`)
+- `/home/node/.openclaw/workspace/` (symlink target, `:ro`)
+- `/home/node/.openclaw/openclaw.json` (symlink target, `:ro`)
 
 ## Threat Classification
 

@@ -31,7 +31,7 @@ The model layer (system prompts, RLHF, Constitutional AI) cannot reliably preven
 
 ## The Solution
 
-This project builds a **simulated** OpenClaw agent (`v0.1-lab`) inside a three-container Docker deployment where the agent's brain is **read-only at the kernel level**. The agent is simulated -- the container builds the expected directory structure, includes an agent-loop script that boots the workspace, connects to the local model server, and accepts tasks -- so the hardening controls can be demonstrated and attacked without requiring a production agent binary.
+This project deploys the **real OpenClaw agent** ([`ghcr.io/openclaw/openclaw:latest`](https://github.com/openclaw/openclaw)) inside a three-container Docker deployment where the agent's brain is **read-only at the kernel level**. The container runs the genuine OpenClaw gateway process (`node openclaw.mjs gateway`), connects to a local llama.cpp model server on an internal network, and accepts tasks -- with all configuration, workspace files, and skills mounted `:ro` so even a fully compromised agent cannot modify them.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -59,7 +59,7 @@ The agent can read its instructions and edit code in `project/`. It **cannot** w
 
 | Container | Role | Key Properties |
 |-----------|------|----------------|
-| `openclaw-gateway` | Agent loop -- reads instructions, calls the model, writes code | Config/instructions/skills `:ro`; project/ `:rw`; credentials **unmounted**; `read_only` root |
+| `openclaw-gateway` | Real OpenClaw gateway -- reads instructions, calls the model, writes code | Config/instructions/skills `:ro`; project/ `:rw`; credentials **unmounted**; `read_only` root |
 | `llamacpp-server` | Model inference -- serves `.gguf` over OpenAI-compatible `/v1` | Model weights `:ro`; `read_only` root; CUDA GPU offload |
 | `openclaw-sandbox` | Per-session tool execution (spawned on demand via `sandbox` profile) | `network_mode: none`; `read_only` root; tmpfs scratch only |
 
@@ -121,7 +121,7 @@ The agent can read its instructions and edit code in `project/`. It **cannot** w
 | Custom seccomp | Default-deny with 366 safe syscalls allowed | `mount`, `ptrace`, `bpf`, container escape |
 | Resource limits | PIDs/memory/CPU caps per container | Fork bombs, memory exhaustion |
 | Non-root user (1000) | No root access | All privilege escalation vectors |
-| Minimal image | `node:20-slim` -- no gcc, no nslookup, no wget | LD_PRELOAD compilation, DNS tunneling |
+| Minimal image | Official OpenClaw image (`node:24-bookworm-slim`) -- no gcc, no nslookup, no wget | LD_PRELOAD compilation, DNS tunneling |
 | `tini` as PID 1 | Proper signal forwarding and zombie reaping | Zombie process DoS |
 
 ## Quick Start
@@ -173,18 +173,18 @@ docker compose logs llamacpp-server | head -20
 
 ```bash
 # Agent coding task: calls llama.cpp, writes code to project/
-docker exec openclaw-gateway sh /home/agent/demo/agent-coding-task.sh
+docker exec openclaw-gateway sh /home/node/demo/agent-coding-task.sh
 
 # Indirect prompt injection: poisoned README.md reaches model loop,
 # environment blocks writes to protected paths
-docker exec openclaw-gateway sh /home/agent/demo/indirect-injection-demo.sh
+docker exec openclaw-gateway sh /home/node/demo/indirect-injection-demo.sh
 ```
 
 ### 6. Run Attack Matrix
 
 ```bash
 # Execute all 20 attacks inside the container and capture evidence
-docker exec openclaw-gateway sh /home/agent/attacks/harness.sh
+docker exec openclaw-gateway sh /home/node/attacks/harness.sh
 
 # Evidence written to evidence/<attack-id>/result.txt
 ```
@@ -214,9 +214,8 @@ docker compose down
 
 ```
 docker/
-  Dockerfile.openclaw            Minimal hardened image (node:20-slim, non-root, tini)
+  Dockerfile.openclaw            Extends official OpenClaw image (ghcr.io/openclaw/openclaw:latest)
   docker-compose.yml             Three-container deployment with all security controls
-  agent-loop.sh                  Simulated agent loop (container CMD)
   seccomp/openclaw-seccomp.json  Custom seccomp profile (default-deny, 366 allowed syscalls)
 
 config/

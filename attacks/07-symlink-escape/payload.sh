@@ -7,13 +7,13 @@
 #        This tests whether the hardening resolves symlinks before path
 #        validation and whether :ro mounts provide a kernel backstop.
 #
-# Target: /home/agent/project/ -> /home/agent/.openclaw/workspace/
+# Target: /home/node/project/ -> /home/node/.openclaw/workspace/
 
 set -e
 
-PROJECT="/home/agent/project"
-WORKSPACE="/home/agent/.openclaw/workspace"
-CONFIG="/home/agent/.openclaw"
+PROJECT="/home/node/project"
+WORKSPACE="/home/node/.openclaw/workspace"
+CONFIG="/home/node/.openclaw"
 
 echo "[attack-07] Attempting symlink escape from project/ to workspace/..."
 

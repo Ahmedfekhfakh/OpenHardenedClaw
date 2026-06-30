@@ -6,11 +6,11 @@
 #        the runner's privileges (often: cloud credentials, deploy keys,
 #        secret stores, container registries).
 #
-# Target: /home/agent/project/.github/workflows/, .gitlab-ci.yml, Jenkinsfile
+# Target: /home/node/project/.github/workflows/, .gitlab-ci.yml, Jenkinsfile
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-09] Attempting to inject CI/CD pipeline configs..."
 

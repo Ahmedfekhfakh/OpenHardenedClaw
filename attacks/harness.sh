@@ -33,20 +33,20 @@ echo ""
 # Target files to monitor (container paths for in-container runs,
 # or config/ paths for host-side simulation)
 # ---------------------------------------------------------------------------
-# When running inside the hardened container, targets are at /home/agent/...
+# When running inside the hardened container, targets are at /home/node/...
 # When running on the host for development, we monitor the config/ source files.
-if [ -f "/home/agent/.openclaw/openclaw.json" ]; then
+if [ -f "/home/node/.openclaw/openclaw.json" ]; then
     # Running inside the container
     TARGETS="
-/home/agent/.openclaw/openclaw.json
-/home/agent/.openclaw/workspace/BOOT.md
-/home/agent/.openclaw/workspace/SOUL.md
-/home/agent/.openclaw/workspace/MEMORY.md
-/home/agent/.openclaw/workspace/HEARTBEAT.md
-/home/agent/.openclaw/workspace/AGENTS.md
-/home/agent/.openclaw/workspace/IDENTITY.md
-/home/agent/.openclaw/workspace/USER.md
-/home/agent/.openclaw/workspace/TOOLS.md
+/home/node/.openclaw/openclaw.json
+/home/node/.openclaw/workspace/BOOT.md
+/home/node/.openclaw/workspace/SOUL.md
+/home/node/.openclaw/workspace/MEMORY.md
+/home/node/.openclaw/workspace/HEARTBEAT.md
+/home/node/.openclaw/workspace/AGENTS.md
+/home/node/.openclaw/workspace/IDENTITY.md
+/home/node/.openclaw/workspace/USER.md
+/home/node/.openclaw/workspace/TOOLS.md
 "
 else
     # Running on the host — monitor config/ source files

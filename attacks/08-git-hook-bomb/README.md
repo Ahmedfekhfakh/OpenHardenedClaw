@@ -14,7 +14,7 @@ credentials.
 
 ## Target
 
-`/home/agent/project/.git/hooks/` (post-commit, pre-push, post-checkout)
+`/home/node/project/.git/hooks/` (post-commit, pre-push, post-checkout)
 
 ## Threat Classification
 

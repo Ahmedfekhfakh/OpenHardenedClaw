@@ -7,11 +7,11 @@
 #        This is an escape-by-proxy: the agent can't break out directly,
 #        but it plants a time bomb that detonates on the human's machine.
 #
-# Target: /home/agent/project/.git/hooks/
+# Target: /home/node/project/.git/hooks/
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-08] Attempting to plant git hook time bombs..."
 

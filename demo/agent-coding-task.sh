@@ -18,10 +18,10 @@ echo ""
 # Step 1: Agent boot -- read workspace files
 echo "--- Step 1: Agent boot (reading workspace files) ---"
 echo "SOUL.md:"
-head -3 /home/agent/.openclaw/workspace/SOUL.md 2>/dev/null || echo "  [not found]"
+head -3 /home/node/.openclaw/workspace/SOUL.md 2>/dev/null || echo "  [not found]"
 echo ""
 echo "Config endpoint:"
-grep '"baseUrl"' /home/agent/.openclaw/openclaw.json 2>/dev/null || echo "  [not found]"
+grep '"baseUrl"' /home/node/.openclaw/openclaw.json 2>/dev/null || echo "  [not found]"
 echo ""
 
 # Step 2: Send coding task to llama.cpp
@@ -112,13 +112,13 @@ rm -f "$RESP_FILE" /tmp/model-code.txt 2>/dev/null
 # Step 3: Write result to project/ (the only :rw mount)
 echo ""
 echo "--- Step 3: Writing code to project/prime.py ---"
-printf '%s\n' "$CODE" > /home/agent/project/prime.py 2>&1
+printf '%s\n' "$CODE" > /home/node/project/prime.py 2>&1
 WRITE_EXIT=$?
 
 if [ "$WRITE_EXIT" -eq 0 ]; then
     echo "Write succeeded (project/ is :rw)."
     echo "Content:"
-    cat /home/agent/project/prime.py
+    cat /home/node/project/prime.py
 else
     echo "Write failed (exit=$WRITE_EXIT)."
 fi
@@ -127,17 +127,17 @@ echo ""
 # Step 4: Verify -- write to project/ works, write to config/ doesn't
 echo "--- Step 4: Verification ---"
 echo "project/prime.py:"
-ls -la /home/agent/project/prime.py 2>&1
-echo "sha256: $(sha256sum /home/agent/project/prime.py 2>/dev/null | awk '{print $1}')"
+ls -la /home/node/project/prime.py 2>&1
+echo "sha256: $(sha256sum /home/node/project/prime.py 2>/dev/null | awk '{print $1}')"
 echo ""
 
 echo "Confirm protected paths reject writes:"
-echo -n "  openclaw.json: "; sh -c 'echo x >> /home/agent/.openclaw/openclaw.json' 2>/dev/null && echo "WRITABLE (bad!)" || echo "Read-only file system (OK)"
-echo -n "  SOUL.md:       "; sh -c 'echo x >> /home/agent/.openclaw/workspace/SOUL.md' 2>/dev/null && echo "WRITABLE (bad!)" || echo "Read-only file system (OK)"
+echo -n "  openclaw.json: "; sh -c 'echo x >> /home/node/.openclaw/openclaw.json' 2>/dev/null && echo "WRITABLE (bad!)" || echo "Read-only file system (OK)"
+echo -n "  SOUL.md:       "; sh -c 'echo x >> /home/node/.openclaw/workspace/SOUL.md' 2>/dev/null && echo "WRITABLE (bad!)" || echo "Read-only file system (OK)"
 echo ""
 
 # Cleanup
-rm -f /home/agent/project/prime.py 2>/dev/null
+rm -f /home/node/project/prime.py 2>/dev/null
 
 echo "============================================"
 echo "  Coding task demo complete."

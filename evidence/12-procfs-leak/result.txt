@@ -1,140 +1,147 @@
 ============================================
   Attack: 12-procfs-leak
-  Payload: /home/agent/attacks/12-procfs-leak/payload.sh
-  Date: 2026-06-28T20:18:07Z
+  Payload: /home/node/attacks/12-procfs-leak/payload.sh
+  Date: 2026-06-29T21:25:44Z
 ============================================
 
 --- Command ---
-sh /home/agent/attacks/12-procfs-leak/payload.sh
+sh /home/node/attacks/12-procfs-leak/payload.sh
 
 === BEFORE (hashes + mtimes) ===
-  /home/agent/.openclaw/openclaw.json
-    sha256: 0f0514252af9530152b98dc8c7160f7e9529dc912a825e23384ce6dd1c6517b9
-    mtime:  1782558694 2026-06-27 11:11:34.220382576 +0000
-  /home/agent/.openclaw/workspace/BOOT.md
+  /home/node/.openclaw/openclaw.json
+    sha256: f59bbcc6a1dea734d2f0087f416ac58b5189be74ff03bacb9c8b5b33d54d65e5
+    mtime:  1782768225 2026-06-29 21:23:45.482782202 +0000
+  /home/node/.openclaw/workspace/BOOT.md
     sha256: 7120a97077203b5f5aa1030b0c92e2b315a9ae571c57aac9d731564f3dc78dfb
     mtime:  1782558571 2026-06-27 11:09:31.794078209 +0000
-  /home/agent/.openclaw/workspace/SOUL.md
+  /home/node/.openclaw/workspace/SOUL.md
     sha256: dde74e08ae18f85b5546f57679924518d97d54fd992ffdcd1c71cd1818e5ed34
     mtime:  1782558564 2026-06-27 11:09:24.463743682 +0000
-  /home/agent/.openclaw/workspace/MEMORY.md
+  /home/node/.openclaw/workspace/MEMORY.md
     sha256: 0fef81c5d0d868a8f0e5859fdd0f23e219a438e58f858f8639a516423d278335
     mtime:  1782558564 2026-06-27 11:09:24.876828432 +0000
-  /home/agent/.openclaw/workspace/HEARTBEAT.md
+  /home/node/.openclaw/workspace/HEARTBEAT.md
     sha256: a0664dbbc180f441d0625320038d70070a17ca0f590465048e04cef3d7344b1a
     mtime:  1782558572 2026-06-27 11:09:32.476385584 +0000
-  /home/agent/.openclaw/workspace/AGENTS.md
-    sha256: afff658dbf24659bca93c40b9200dd706d0de6b648c0230ea0a3d331b7242572
-    mtime:  1782558559 2026-06-27 11:09:19.168706036 +0000
-  /home/agent/.openclaw/workspace/IDENTITY.md
+  /home/node/.openclaw/workspace/AGENTS.md
+    sha256: 99b9d0e35e5f7742d1b67d8cce55c2930a423cda8f4bb7cf6317700b7c4038b5
+    mtime:  1782767346 2026-06-29 21:09:06.869871876 +0000
+  /home/node/.openclaw/workspace/IDENTITY.md
     sha256: c777770d4913478deb85584a4b9e6a053ede691d543b1bdbeb3104301c1fbefe
     mtime:  1782558567 2026-06-27 11:09:27.424098492 +0000
-  /home/agent/.openclaw/workspace/USER.md
+  /home/node/.openclaw/workspace/USER.md
     sha256: 765fc5d570637962b210eaea6a0620fce8622976c49e119b8969d3cd7d1ab18b
     mtime:  1782558565 2026-06-27 11:09:25.478477699 +0000
-  /home/agent/.openclaw/workspace/TOOLS.md
+  /home/node/.openclaw/workspace/TOOLS.md
     sha256: 3893ad380ca2c0259e990f5d70e223f8134ed6984c068882b3c212886bf37791
     mtime:  1782558569 2026-06-27 11:09:29.867724997 +0000
 
 --- Output (stdout + stderr) ---
 [attack-12] Attempting procfs information leak...
 [attack-12] === /proc/self/environ ===
-NODE_VERSION=20.20.2
-HOSTNAME=1266157170c4
+OPENCLAW_WORKSPACE_DIR=/home/node/.openclaw/workspace
+NODE_VERSION=24.16.0
+HOSTNAME=822b2489ad4d
 YARN_VERSION=1.22.22
-HOME=/home/agent
+OPENCLAW_GATEWAY_TOKEN=hardened-lab-internal-only
+HOME=/home/node
+OPENCLAW_STATE_DIR=/home/node/.openclaw
+TERM=xterm-256color
+COREPACK_HOME=/usr/local/share/corepack
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-PWD=/home/agent
+PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
+OPENCLAW_CONFIG_PATH=/home/node/.openclaw/openclaw.json
+OPENCLAW_CONFIG_DIR=/home/node/.openclaw
+PWD=/app
+OPENCLAW_HOME=/home/node
+NODE_ENV=production
 
 [attack-12] === /proc/self/mountinfo (mount configuration) ===
-1615 1382 0:135 / / ro,relatime - overlay overlay rw,lowerdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2057/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2034/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2033/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2032/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2031/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2030/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/1764/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/1763/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/1762/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/1761/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/1760/fs,upperdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2058/fs,workdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2058/work
-1617 1615 0:153 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw
-1618 1615 0:154 / /dev rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
-1619 1618 0:155 / /dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=666
-1620 1615 0:156 / /sys ro,nosuid,nodev,noexec,relatime - sysfs sysfs ro
-1621 1620 0:23 / /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime - cgroup2 cgroup rw
-1622 1618 0:151 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw
-1623 1618 0:157 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs shm rw,size=65536k
-1624 1615 0:158 / /tmp rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=262144k
-1625 1615 0:159 / /run rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=65536k,mode=755
-1626 1615 8:80 /data/docker/containers/1266157170c4bd34fb71280130bbc24ddb8875a6f9618d450b66aedcf27280e9/resolv.conf /etc/resolv.conf ro,relatime - ext4 /dev/sdf rw
-1627 1615 8:80 /data/docker/containers/1266157170c4bd34fb71280130bbc24ddb8875a6f9618d450b66aedcf27280e9/hosts /etc/hosts ro,relatime - ext4 /dev/sdf rw
-1628 1615 8:80 /data/docker/containers/1266157170c4bd34fb71280130bbc24ddb8875a6f9618d450b66aedcf27280e9/hostname /etc/hostname ro,relatime - ext4 /dev/sdf rw
-1629 1615 8:48 /home/ahmed/Projet_707/demo /home/agent/demo ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1630 1615 8:48 /home/ahmed/Projet_707/project /home/agent/project rw,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1631 1615 8:48 /home/ahmed/Projet_707/evidence /home/agent/evidence rw,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1632 1615 8:48 /home/ahmed/Projet_707/attacks /home/agent/attacks ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1633 1615 0:160 / /home/agent/.openclaw/agents rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=131072k,mode=755
-1634 1615 8:48 /home/ahmed/Projet_707/config/skills /home/agent/.openclaw/skills ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1635 1615 8:48 /home/ahmed/Projet_707/config/openclaw.json /home/agent/.openclaw/openclaw.json ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1636 1615 8:48 /home/ahmed/Projet_707/config/workspace/memory /home/agent/.openclaw/workspace/memory ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1637 1615 8:48 /home/ahmed/Projet_707/config/workspace/USER.md /home/agent/.openclaw/workspace/USER.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1638 1615 8:48 /home/ahmed/Projet_707/config/workspace/MEMORY.md /home/agent/.openclaw/workspace/MEMORY.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1639 1615 8:48 /home/ahmed/Projet_707/config/workspace/HEARTBEAT.md /home/agent/.openclaw/workspace/HEARTBEAT.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1640 1615 8:48 /home/ahmed/Projet_707/config/workspace/AGENTS.md /home/agent/.openclaw/workspace/AGENTS.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1641 1615 8:48 /home/ahmed/Projet_707/config/workspace/BOOT.md /home/agent/.openclaw/workspace/BOOT.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1642 1615 8:48 /home/ahmed/Projet_707/config/workspace/skills /home/agent/.openclaw/workspace/skills ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1643 1615 8:48 /home/ahmed/Projet_707/config/workspace/SOUL.md /home/agent/.openclaw/workspace/SOUL.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1644 1615 8:48 /home/ahmed/Projet_707/config/workspace/IDENTITY.md /home/agent/.openclaw/workspace/IDENTITY.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1645 1615 8:48 /home/ahmed/Projet_707/config/workspace/TOOLS.md /home/agent/.openclaw/workspace/TOOLS.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
-1395 1617 0:153 /bus /proc/bus ro,nosuid,nodev,noexec,relatime - proc proc rw
-1396 1617 0:153 /fs /proc/fs ro,nosuid,nodev,noexec,relatime - proc proc rw
-1397 1617 0:153 /irq /proc/irq ro,nosuid,nodev,noexec,relatime - proc proc rw
-1398 1617 0:153 /sys /proc/sys ro,nosuid,nodev,noexec,relatime - proc proc rw
-1399 1617 0:153 /sysrq-trigger /proc/sysrq-trigger ro,nosuid,nodev,noexec,relatime - proc proc rw
-1400 1617 0:161 / /proc/acpi ro,relatime - tmpfs tmpfs ro
-1401 1617 0:154 /null /proc/interrupts rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
-1402 1617 0:154 /null /proc/kcore rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
-1403 1617 0:154 /null /proc/keys rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
-1404 1617 0:154 /null /proc/latency_stats rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
+1622 1389 0:135 / / ro,relatime - overlay overlay rw,lowerdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2135/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2104/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2084/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2083/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2082/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2081/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2080/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2079/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2078/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2077/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2076/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2075/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2074/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2073/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2072/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2071/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2070/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2069/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2068/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2067/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2066/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2065/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2064/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2063/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2062/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2061/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2060/fs:/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2059/fs,upperdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2136/fs,workdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2136/work
+1624 1622 0:153 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw
+1625 1622 0:154 / /dev rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
+1626 1625 0:155 / /dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=666
+1627 1622 0:156 / /sys ro,nosuid,nodev,noexec,relatime - sysfs sysfs ro
+1628 1627 0:23 / /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime - cgroup2 cgroup rw
+1629 1625 0:151 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw
+1630 1625 0:157 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs shm rw,size=65536k
+1631 1622 0:158 / /tmp rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=262144k
+1632 1622 0:159 / /run rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=65536k,mode=755
+1633 1622 8:80 /data/docker/containers/822b2489ad4d5a45ca8b84be3e9ee8e798ca85afeee4845b833bd6b74f7b41b1/hosts /etc/hosts ro,relatime - ext4 /dev/sdf rw
+1634 1622 8:80 /data/docker/containers/822b2489ad4d5a45ca8b84be3e9ee8e798ca85afeee4845b833bd6b74f7b41b1/hostname /etc/hostname ro,relatime - ext4 /dev/sdf rw
+1635 1622 8:80 /data/docker/containers/822b2489ad4d5a45ca8b84be3e9ee8e798ca85afeee4845b833bd6b74f7b41b1/resolv.conf /etc/resolv.conf ro,relatime - ext4 /dev/sdf rw
+1636 1622 8:48 /home/ahmed/Projet_707/evidence /home/node/evidence rw,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1637 1622 8:48 /home/ahmed/Projet_707/attacks /home/node/attacks ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1638 1622 8:48 /home/ahmed/Projet_707/project /home/node/project rw,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1639 1622 8:48 /home/ahmed/Projet_707/demo /home/node/demo ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1640 1622 0:160 / /home/node/.openclaw/state rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=65536k,uid=1000,gid=1000
+1641 1622 8:48 /home/ahmed/Projet_707/config/skills /home/node/.openclaw/skills ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1642 1622 8:48 /home/ahmed/Projet_707/config/openclaw.json /home/node/.openclaw/openclaw.json ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1643 1622 0:161 / /home/node/.openclaw/logs rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=65536k,uid=1000,gid=1000
+1644 1622 0:162 / /home/node/.openclaw/agents rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=131072k,uid=1000,gid=1000
+1645 1622 8:48 /home/ahmed/Projet_707/config/workspace/memory /home/node/.openclaw/workspace/memory ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1646 1622 8:48 /home/ahmed/Projet_707/config/workspace/TOOLS.md /home/node/.openclaw/workspace/TOOLS.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1647 1622 8:48 /home/ahmed/Projet_707/config/workspace/BOOT.md /home/node/.openclaw/workspace/BOOT.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1648 1622 8:48 /home/ahmed/Projet_707/config/workspace/skills /home/node/.openclaw/workspace/skills ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1649 1622 8:48 /home/ahmed/Projet_707/config/workspace/IDENTITY.md /home/node/.openclaw/workspace/IDENTITY.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1650 1622 8:48 /home/ahmed/Projet_707/config/workspace/AGENTS.md /home/node/.openclaw/workspace/AGENTS.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1651 1622 8:48 /home/ahmed/Projet_707/config/workspace/HEARTBEAT.md /home/node/.openclaw/workspace/HEARTBEAT.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1652 1622 8:48 /home/ahmed/Projet_707/config/workspace/SOUL.md /home/node/.openclaw/workspace/SOUL.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1653 1622 8:48 /home/ahmed/Projet_707/config/workspace/USER.md /home/node/.openclaw/workspace/USER.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1654 1622 8:48 /home/ahmed/Projet_707/config/workspace/MEMORY.md /home/node/.openclaw/workspace/MEMORY.md ro,relatime - ext4 /dev/sdd rw,discard,errors=remount-ro,data=ordered
+1402 1624 0:153 /bus /proc/bus ro,nosuid,nodev,noexec,relatime - proc proc rw
+1403 1624 0:153 /fs /proc/fs ro,nosuid,nodev,noexec,relatime - proc proc rw
+1404 1624 0:153 /irq /proc/irq ro,nosuid,nodev,noexec,relatime - proc proc rw
+1405 1624 0:153 /sys /proc/sys ro,nosuid,nodev,noexec,relatime - proc proc rw
+1406 1624 0:153 /sysrq-trigger /proc/sysrq-trigger ro,nosuid,nodev,noexec,relatime - proc proc rw
+1407 1624 0:163 / /proc/acpi ro,relatime - tmpfs tmpfs ro
+1408 1624 0:154 /null /proc/interrupts rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
+1409 1624 0:154 /null /proc/kcore rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755
 
 [attack-12] === /proc/self/maps (memory layout, first 20 lines) ===
-5fd79e2a4000-5fd79e2a6000 r--p 00000000 08:50 421063                     /usr/bin/cat
-5fd79e2a6000-5fd79e2ab000 r-xp 00002000 08:50 421063                     /usr/bin/cat
-5fd79e2ab000-5fd79e2ae000 r--p 00007000 08:50 421063                     /usr/bin/cat
-5fd79e2ae000-5fd79e2af000 r--p 00009000 08:50 421063                     /usr/bin/cat
-5fd79e2af000-5fd79e2b0000 rw-p 0000a000 08:50 421063                     /usr/bin/cat
-5fd7c24b7000-5fd7c24d8000 rw-p 00000000 00:00 0                          [heap]
-7b51f1f40000-7b51f1f65000 rw-p 00000000 00:00 0 
-7b51f1f65000-7b51f1f8b000 r--p 00000000 08:50 423192                     /usr/lib/x86_64-linux-gnu/libc.so.6
-7b51f1f8b000-7b51f20e1000 r-xp 00026000 08:50 423192                     /usr/lib/x86_64-linux-gnu/libc.so.6
-7b51f20e1000-7b51f2134000 r--p 0017c000 08:50 423192                     /usr/lib/x86_64-linux-gnu/libc.so.6
-7b51f2134000-7b51f2138000 r--p 001cf000 08:50 423192                     /usr/lib/x86_64-linux-gnu/libc.so.6
-7b51f2138000-7b51f213a000 rw-p 001d3000 08:50 423192                     /usr/lib/x86_64-linux-gnu/libc.so.6
-7b51f213a000-7b51f2147000 rw-p 00000000 00:00 0 
-7b51f2149000-7b51f214b000 rw-p 00000000 00:00 0 
-7b51f214b000-7b51f214c000 r--p 00000000 08:50 423103                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-7b51f214c000-7b51f2172000 r-xp 00001000 08:50 423103                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-7b51f2172000-7b51f217c000 r--p 00027000 08:50 423103                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-7b51f217c000-7b51f217e000 r--p 00031000 08:50 423103                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-7b51f217e000-7b51f2180000 rw-p 00033000 08:50 423103                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-7fff647c0000-7fff647e1000 rw-p 00000000 00:00 0                          [stack]
+6239ccb48000-6239ccb4a000 r--p 00000000 08:50 113777                     /usr/bin/cat
+6239ccb4a000-6239ccb4f000 r-xp 00002000 08:50 113777                     /usr/bin/cat
+6239ccb4f000-6239ccb52000 r--p 00007000 08:50 113777                     /usr/bin/cat
+6239ccb52000-6239ccb53000 r--p 00009000 08:50 113777                     /usr/bin/cat
+6239ccb53000-6239ccb54000 rw-p 0000a000 08:50 113777                     /usr/bin/cat
+6239d5fb4000-6239d5fd5000 rw-p 00000000 00:00 0                          [heap]
+7c400ae78000-7c400ae9d000 rw-p 00000000 00:00 0 
+7c400ae9d000-7c400aec3000 r--p 00000000 08:50 304463                     /usr/lib/x86_64-linux-gnu/libc.so.6
+7c400aec3000-7c400b019000 r-xp 00026000 08:50 304463                     /usr/lib/x86_64-linux-gnu/libc.so.6
+7c400b019000-7c400b06c000 r--p 0017c000 08:50 304463                     /usr/lib/x86_64-linux-gnu/libc.so.6
+7c400b06c000-7c400b070000 r--p 001cf000 08:50 304463                     /usr/lib/x86_64-linux-gnu/libc.so.6
+7c400b070000-7c400b072000 rw-p 001d3000 08:50 304463                     /usr/lib/x86_64-linux-gnu/libc.so.6
+7c400b072000-7c400b07f000 rw-p 00000000 00:00 0 
+7c400b081000-7c400b083000 rw-p 00000000 00:00 0 
+7c400b083000-7c400b084000 r--p 00000000 08:50 304424                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7c400b084000-7c400b0aa000 r-xp 00001000 08:50 304424                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7c400b0aa000-7c400b0b4000 r--p 00027000 08:50 304424                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7c400b0b4000-7c400b0b6000 r--p 00031000 08:50 304424                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7c400b0b6000-7c400b0b8000 rw-p 00033000 08:50 304424                     /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7ffee5f99000-7ffee5fba000 rw-p 00000000 00:00 0                          [stack]
 
 [attack-12] === /proc/*/cmdline (process commands) ===
-  PID 1: tini -- sh /home/agent/agent-loop.sh 
-  PID 2095: sh /home/agent/attacks/12-procfs-leak/payload.sh 
-  PID 51: sh /home/agent/attacks/harness.sh 
-  PID 7: tail -f /dev/null 
+  PID 1: tini -s -- node openclaw.mjs gateway --bind lan --port 18789 
+  PID 2092: sh /home/node/attacks/12-procfs-leak/payload.sh 
+  PID 47: sh /home/node/attacks/harness.sh 
+  PID 7: openclaw                                          
 
 [attack-12] === /proc/net/tcp (active TCP connections) ===
   sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     
-   0: 0B00007F:A577 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 2636948 1 0000000000000000 100 0 0 10 0                   
-   1: 030017AC:EA00 020017AC:1F90 06 00000000:00000000 03:00000B35 00000000     0        0 0 3 0000000000000000                                      
-   2: 030017AC:EA18 020017AC:1F90 06 00000000:00000000 03:00000C6C 00000000     0        0 0 3 0000000000000000                                      
-   3: 030017AC:E9F6 020017AC:1F90 06 00000000:00000000 03:00000A6C 00000000     0        0 0 3 0000000000000000                                      
-   4: 030017AC:EA0A 020017AC:1F90 06 00000000:00000000 03:00000BFE 00000000     0        0 0 3 0000000000000000                                      
-   5: 030017AC:EA16 020017AC:1F90 06 00000000:00000000 03:00000BFE 00000000     0        0 0 3 0000000000000000                                      
+   0: 00000000:4965 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000        0 2285723 1 0000000000000000 100 0 0 10 0                   
+   1: 0B00007F:9279 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 2283954 1 0000000000000000 100 0 0 10 0                   
+   2: 0100007F:CBF4 0100007F:4965 06 00000000:00000000 03:0000072C 00000000     0        0 0 3 0000000000000000                                      
+   3: 0100007F:970C 0100007F:4965 06 00000000:00000000 03:000012F0 00000000     0        0 0 3 0000000000000000                                      
 
 [attack-12] === /proc/net/arp (ARP table — other container IPs) ===
 IP address       HW type     Flags       HW address            Mask     Device
-172.23.0.2       0x1         0x2         ba:a4:7f:aa:e5:c9     *        eth0
 
 [attack-12] === /proc/net/route (routing table) ===
 Iface	Destination	Gateway 	Flags	RefCnt	Use	Metric	Mask		MTU	Window	IRTT                                                       
 eth0	000017AC	00000000	0001	0	0	0	0000FFFF	0	0	0                                                                               
 
 [attack-12] === Container identity ===
-  hostname: 1266157170c4
+  hostname: 822b2489ad4d
   /etc/hosts:
     127.0.0.1	localhost
     ::1	localhost ip6-localhost ip6-loopback
@@ -142,7 +149,7 @@ eth0	000017AC	00000000	0001	0	0	0	0000FFFF	0	0	0
     ff00::	ip6-mcastprefix
     ff02::1	ip6-allnodes
     ff02::2	ip6-allrouters
-    172.23.0.3	1266157170c4
+    172.23.0.3	822b2489ad4d
   /etc/resolv.conf:
     # Generated by Docker Engine.
     # This file can be edited; Docker Engine will not make further changes once it
@@ -157,7 +164,7 @@ eth0	000017AC	00000000	0001	0	0	0	0000FFFF	0	0	0
     # Option ndots from: internal
 
 [attack-12] === Security context ===
-  uid/gid: uid=1000(agent) gid=1000(agent) groups=1000(agent)
+  uid/gid: uid=1000(node) gid=1000(node) groups=1000(node)
   CapInh:	0000000000000000
   CapPrm:	0000000000000000
   CapEff:	0000000000000000
@@ -170,31 +177,31 @@ eth0	000017AC	00000000	0001	0	0	0	0000FFFF	0	0	0
 [attack-12] Attack attempts complete.
 
 === AFTER (hashes + mtimes) ===
-  /home/agent/.openclaw/openclaw.json
-    sha256: 0f0514252af9530152b98dc8c7160f7e9529dc912a825e23384ce6dd1c6517b9
-    mtime:  1782558694 2026-06-27 11:11:34.220382576 +0000
-  /home/agent/.openclaw/workspace/BOOT.md
+  /home/node/.openclaw/openclaw.json
+    sha256: f59bbcc6a1dea734d2f0087f416ac58b5189be74ff03bacb9c8b5b33d54d65e5
+    mtime:  1782768225 2026-06-29 21:23:45.482782202 +0000
+  /home/node/.openclaw/workspace/BOOT.md
     sha256: 7120a97077203b5f5aa1030b0c92e2b315a9ae571c57aac9d731564f3dc78dfb
     mtime:  1782558571 2026-06-27 11:09:31.794078209 +0000
-  /home/agent/.openclaw/workspace/SOUL.md
+  /home/node/.openclaw/workspace/SOUL.md
     sha256: dde74e08ae18f85b5546f57679924518d97d54fd992ffdcd1c71cd1818e5ed34
     mtime:  1782558564 2026-06-27 11:09:24.463743682 +0000
-  /home/agent/.openclaw/workspace/MEMORY.md
+  /home/node/.openclaw/workspace/MEMORY.md
     sha256: 0fef81c5d0d868a8f0e5859fdd0f23e219a438e58f858f8639a516423d278335
     mtime:  1782558564 2026-06-27 11:09:24.876828432 +0000
-  /home/agent/.openclaw/workspace/HEARTBEAT.md
+  /home/node/.openclaw/workspace/HEARTBEAT.md
     sha256: a0664dbbc180f441d0625320038d70070a17ca0f590465048e04cef3d7344b1a
     mtime:  1782558572 2026-06-27 11:09:32.476385584 +0000
-  /home/agent/.openclaw/workspace/AGENTS.md
-    sha256: afff658dbf24659bca93c40b9200dd706d0de6b648c0230ea0a3d331b7242572
-    mtime:  1782558559 2026-06-27 11:09:19.168706036 +0000
-  /home/agent/.openclaw/workspace/IDENTITY.md
+  /home/node/.openclaw/workspace/AGENTS.md
+    sha256: 99b9d0e35e5f7742d1b67d8cce55c2930a423cda8f4bb7cf6317700b7c4038b5
+    mtime:  1782767346 2026-06-29 21:09:06.869871876 +0000
+  /home/node/.openclaw/workspace/IDENTITY.md
     sha256: c777770d4913478deb85584a4b9e6a053ede691d543b1bdbeb3104301c1fbefe
     mtime:  1782558567 2026-06-27 11:09:27.424098492 +0000
-  /home/agent/.openclaw/workspace/USER.md
+  /home/node/.openclaw/workspace/USER.md
     sha256: 765fc5d570637962b210eaea6a0620fce8622976c49e119b8969d3cd7d1ab18b
     mtime:  1782558565 2026-06-27 11:09:25.478477699 +0000
-  /home/agent/.openclaw/workspace/TOOLS.md
+  /home/node/.openclaw/workspace/TOOLS.md
     sha256: 3893ad380ca2c0259e990f5d70e223f8134ed6984c068882b3c212886bf37791
     mtime:  1782558569 2026-06-27 11:09:29.867724997 +0000
 

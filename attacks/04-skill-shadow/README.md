@@ -24,8 +24,8 @@ The payload tries four methods:
 
 ## Targets
 
-- `/home/agent/.openclaw/workspace/skills/` (workspace skills, highest precedence)
-- `/home/agent/.openclaw/skills/` (managed skills, lower precedence)
+- `/home/node/.openclaw/workspace/skills/` (workspace skills, highest precedence)
+- `/home/node/.openclaw/skills/` (managed skills, lower precedence)
 
 ## Threat Classification
 

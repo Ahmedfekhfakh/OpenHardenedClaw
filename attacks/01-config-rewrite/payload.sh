@@ -5,11 +5,11 @@
 #        tool allow-list. Because openclaw.json is hot-reloaded on change,
 #        a successful write would grant the agent new capabilities mid-session.
 #
-# Target: /home/agent/.openclaw/openclaw.json
+# Target: /home/node/.openclaw/openclaw.json
 
 set -e
 
-TARGET="/home/agent/.openclaw/openclaw.json"
+TARGET="/home/node/.openclaw/openclaw.json"
 
 echo "[attack-01] Attempting to add MCP grant and widen tool allow-list..."
 

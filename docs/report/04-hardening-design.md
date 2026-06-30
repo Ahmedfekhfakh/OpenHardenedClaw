@@ -32,7 +32,7 @@ The partition table maps every significant path to a mount mode and ties each de
 
 ### Row-by-Row Justification
 
-**openclaw.json (`:ro`).** OpenClaw hot-reloads this file on filesystem change events. A single write can add MCP server grants, relax the tool allow-list, redirect the inference endpoint to an attacker-controlled server, or disable sandboxing -- all mid-session, without restart, without user confirmation. The read-only mount ensures the hot-reload code path never fires because the underlying write is blocked by the kernel.
+**openclaw.json (`:ro`).** OpenClaw hot-reloads this file on filesystem change events. A single write can add MCP server grants, relax the tool allow-list, redirect the inference endpoint to an attacker-controlled server, or disable sandboxing -- all mid-session, without restart, without user confirmation. The read-only mount ensures the hot-reload code path never fires because the underlying write is blocked by the kernel. The live run confirmed this: during startup, the real OpenClaw gateway (version 2026.6.10) attempted to write `openclaw.json.last-good` and received `EROFS: read-only file system`.
 
 **credentials/ (unmounted).** A read-only mount still allows the agent to read file contents and exfiltrate them over the network. Unmounting removes the path from the container's namespace entirely -- there is nothing to read. Since the model is served locally via llama.cpp, no provider API key is needed inside the container.
 
@@ -76,7 +76,7 @@ The partition table maps every significant path to a mount mode and ties each de
 
 ### Non-Root User
 
-All containers run as `user: 1000:1000` (the `agent` user created in the Dockerfile with `/usr/sbin/nologin` as shell). Running as a non-root user means the process cannot modify system files owned by root, cannot bind to privileged ports, and reduces the attack surface for container-escape exploits that require root inside the container.
+All containers run as `user: 1000:1000` (the `node` user from the official OpenClaw image). Running as a non-root user means the process cannot modify system files owned by root, cannot bind to privileged ports, and reduces the attack surface for container-escape exploits that require root inside the container.
 
 **Threat covered:** Root-inside-container enables privilege escalation and escape vectors.
 
@@ -129,7 +129,7 @@ A custom seccomp profile (`docker/seccomp/openclaw-seccomp.json`) restricts the 
 | Container | PIDs Limit | Memory Limit | CPU Limit |
 |-----------|-----------|--------------|-----------|
 | `openclaw-gateway` | 256 | 2 GB | 2 CPUs |
-| `llamacpp-server` | 64 | 4 GB | 4 CPUs |
+| `llamacpp-server` | 64 | 12 GB | 4 CPUs |
 | `openclaw-sandbox` | 64 | 512 MB | 1 CPU |
 
 **Threat covered:** Fork-bomb denial of service, memory-exhaustion attacks, CPU-exhaustion attacks. PID limits prevent uncontrolled process spawning. Memory limits trigger OOM kills before the host is affected. CPU limits prevent a single container from starving others.
@@ -144,8 +144,8 @@ The read-only mounts on target paths provide a kernel-level backstop: even if sy
 
 ### PID-1 Signal Handling (tini)
 
-The Dockerfile uses `tini` as the entrypoint (`ENTRYPOINT ["tini", "--"]`). Tini serves as PID 1 inside the container, properly forwarding signals and reaping zombie processes. Without tini, an orphaned process tree could accumulate zombies until the PID limit is reached, causing a denial of service.
+The official OpenClaw image uses `tini` as the entrypoint (`ENTRYPOINT ["tini", "-s", "--"]`). Tini serves as PID 1 inside the container, properly forwarding signals and reaping zombie processes. Without tini, an orphaned process tree could accumulate zombies until the PID limit is reached, causing a denial of service. The live run confirmed PID 1 as `tini -s -- node openclaw.mjs gateway --bind lan --port 18789`.
 
 ### Minimal Base Image
 
-The Dockerfile uses `node:20-slim` and installs only `curl` (for health checks) and `tini`. No compiler toolchain, no package managers beyond apt (which has its cache removed), no development headers. This minimizes the attack surface inside the container.
+The official OpenClaw image (`ghcr.io/openclaw/openclaw:latest`) is based on a Node.js slim image with essential packages (curl for health checks, tini for PID-1, git and python3 for agent tooling). No compiler toolchain (`gcc`/`cc`) is present, preventing compilation of malicious shared libraries for `LD_PRELOAD` injection. This minimizes the attack surface inside the container.

@@ -1,75 +1,33 @@
 {
-  "_comment": "Hardened OpenClaw configuration — all fields are read-only at runtime via :ro bind mount",
-
+  "gateway": {
+    "mode": "local"
+  },
   "models": {
     "providers": {
       "llamacpp-local": {
         "baseUrl": "http://llamacpp-server:8080/v1",
+        "apiKey": "sk-local",
         "api": "openai-completions",
-        "apiKey": "sk-local"
+        "models": [
+          {
+            "id": "local-model",
+            "name": "Local llama.cpp Model",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": { "input": 0, "output": 0 },
+            "contextWindow": 8192,
+            "maxTokens": 4096
+          }
+        ]
       }
     }
   },
-
   "agents": {
     "defaults": {
-      "models": {
-        "llamacpp-local/model": {
-          "enabled": true,
-          "params": {
-            "streaming": false,
-            "extra_body": {
-              "tool_choice": "required"
-            }
-          },
-          "compat": {
-            "supportsTools": true
-          }
-        }
-      }
+      "model": {
+        "primary": "llamacpp-local/local-model"
+      },
+      "timeoutSeconds": 300
     }
-  },
-
-  "sandbox": {
-    "mode": "all",
-    "readOnlyRoot": true,
-    "network": "none",
-    "capDrop": ["ALL"],
-    "user": "1000:1000",
-    "seccomp": "openclaw-seccomp.json",
-    "pidsLimit": 64,
-    "memoryLimit": "512m",
-    "cpuLimit": 1,
-    "noNewPrivileges": true
-  },
-
-  "tools": {
-    "allow": [
-      "file_read",
-      "file_write",
-      "bash",
-      "grep",
-      "glob",
-      "list_directory"
-    ],
-    "deny": [
-      "browser",
-      "cron",
-      "network_fetch",
-      "mcp_install",
-      "mcp_remove",
-      "credential_read",
-      "credential_write",
-      "docker_exec",
-      "skill_install",
-      "skill_create"
-    ]
-  },
-
-  "security": {
-    "readOnlyConfig": true,
-    "noCredentials": true,
-    "noDockerSocket": true,
-    "resolveSymlinks": true
   }
 }

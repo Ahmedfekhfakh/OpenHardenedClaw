@@ -6,13 +6,13 @@
 #        memory poisoning is a write-once, execute-forever primitive.
 #
 # Targets:
-#   /home/agent/.openclaw/workspace/SOUL.md
-#   /home/agent/.openclaw/workspace/MEMORY.md
+#   /home/node/.openclaw/workspace/SOUL.md
+#   /home/node/.openclaw/workspace/MEMORY.md
 
 set -e
 
-SOUL="/home/agent/.openclaw/workspace/SOUL.md"
-MEMORY="/home/agent/.openclaw/workspace/MEMORY.md"
+SOUL="/home/node/.openclaw/workspace/SOUL.md"
+MEMORY="/home/node/.openclaw/workspace/MEMORY.md"
 
 echo "[attack-03] Attempting to poison SOUL.md and MEMORY.md..."
 

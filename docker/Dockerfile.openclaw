@@ -1,54 +1,40 @@
 # =============================================================================
-# Dockerfile.openclaw — Hardened OpenClaw Agent Image
+# Dockerfile.openclaw — Hardened OpenClaw Agent Image (extends official)
 # =============================================================================
-# Minimal base, non-root user, no secrets baked in.
-# Used by both openclaw-gateway and openclaw-sandbox services.
+# This Dockerfile extends the official OpenClaw image for hardened deployment.
+# The official image already provides: Node.js 24, git, curl, python3, tini,
+# and the OpenClaw agent runtime (openclaw.mjs). We only add the project
+# directory structure needed for bind mounts.
+#
+# Security model:
+#   - Runs as user "node" (UID 1000) — inherited from the official image
+#   - No secrets, credentials, or .env files baked into the image
+#   - Model served locally via llama.cpp — no provider API key needed
+#   - Entrypoint/CMD inherited: tini -s -- / node openclaw.mjs gateway
 # =============================================================================
 
-FROM node:20-slim
+FROM ghcr.io/openclaw/openclaw:latest
 
 # --- Metadata ----------------------------------------------------------------
 LABEL maintainer="telecom-paris-707-lab"
-LABEL description="Hardened OpenClaw agent image — non-root, minimal surface"
+LABEL description="Hardened OpenClaw agent image — extends official, non-root, minimal surface"
 
-# --- Install only essential system packages ----------------------------------
-# curl: health checks; tini: PID-1 signal forwarding (zombie reaping)
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-      curl \
-      tini \
- && rm -rf /var/lib/apt/lists/*
-
-# --- Create non-root user (UID 1000) ----------------------------------------
-# Threat: running as root allows privilege escalation and host escape vectors.
-# Control: dedicated unprivileged user with no login shell.
-# UID/GID 1000 already exists in node:20-slim as "node". Reuse it as "agent".
-RUN usermod -l agent -d /home/agent -m node 2>/dev/null \
- && groupmod -n agent node 2>/dev/null || true
-
-# --- Simulate OpenClaw directory structure -----------------------------------
-# In production, this would be `npm install -g openclaw` or similar.
-# We create the expected directory tree so bind mounts have valid targets.
-RUN mkdir -p /home/agent/.openclaw/workspace/memory \
-             /home/agent/.openclaw/workspace/skills \
-             /home/agent/.openclaw/skills \
-             /home/agent/.openclaw/agents \
-             /home/agent/project \
- && chown -R 1000:1000 /home/agent
+# --- Create project directory for the :rw bind mount target ------------------
+# Threat: missing mount target causes Docker to create it as root, breaking
+# the non-root ownership invariant.
+# Control: pre-create with correct ownership so the bind mount lands cleanly.
+RUN mkdir -p /home/node/project && chown node:node /home/node/project
 
 # --- No secrets, no credentials, no .env ------------------------------------
 # Threat: baked-in secrets are extractable by any process in the container.
 # Control: secrets are NEVER copied into the image; model is local (llama.cpp).
 
-# --- Switch to non-root user ------------------------------------------------
-USER agent
-WORKDIR /home/agent
+# --- Non-root user (inherited from official image) --------------------------
+# The official image defines USER node. WORKDIR is /app (where openclaw.mjs lives).
+# We re-declare USER for clarity and to satisfy auditing tools.
+USER node
 
-# --- Use tini as PID 1 for proper signal handling ---------------------------
-ENTRYPOINT ["tini", "--"]
-
-# --- Copy agent loop script --------------------------------------------------
-COPY agent-loop.sh /home/agent/agent-loop.sh
-
-# --- Default command: start the simulated agent loop -------------------------
-CMD ["sh", "/home/agent/agent-loop.sh"]
+# --- Entrypoint and CMD are inherited from the official image ----------------
+# ENTRYPOINT ["tini", "-s", "--"]
+# CMD ["node", "openclaw.mjs", "gateway"]
+# WORKDIR is /app — do NOT override to /home/node or the gateway won't find openclaw.mjs.

